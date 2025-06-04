@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Магія десертів</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script> 
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIkjMnJ3SaP65oSA8hbfnK_y82Ufs394o",
+      authDomain: "desserts-site.firebaseapp.com",
+      projectId: "desserts-site",
+      storageBucket: "desserts-site.firebasestorage.app",
+      messagingSenderId: "265582634261",
+      appId: "1:265582634261:web:3b3f56679bf8155181b51c"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+  </script>
+</head>
+<body>
+<nav style="text-align: center; margin: 20px;">
+  <a href="login.html" style="margin: 0 30px 0 0;">Вхід</a>
+  <a href="registr.html" style="margin: 0 30px 0 0;">Реєстрація</a>
+  <a href="#recipes-section" style="margin: 0 30px 0 0; cursor: pointer;">Рецепти</a>
+  <a href="faq.html" style="margin: 0 30px 0 0;">Поширені запитання</a>
+  <a href="about.html">Про нас</a>
+</nav>
+
+  <img src="images/logo.png" alt="Логотип Магія десертів" class="logo" />
+  <section class="hero-section">
+    <h1>Магія десертів</h1>
+    <img src="images/ponchiki.png" alt="Пончики" class="hero-image" />
+  </section>
+
+  <section class="welcome-section">
+    <div class="welcome-image-wrapper">
+      <img src="images/photo1.png" alt="Фото десерту" class="welcome-image" />
+    </div>
+    <div class="welcome-text-block">
+      <h2>Ласкаво просимо!</h2>
+      <p>Відкрийте для себе найчарівніші рецепти десертів, які зможете повторити з легкістю та задоволенням!</p>
+    </div>
+
+  </section>
+    <section class="recipes-section" id="recipes-section">
+  <h2>Наші рецепти</h2>
+  <hr class="recipes-line" />
+</section>
+
+  <div style="text-align: center; margin: 20px 0 50px;">
+    <input type="text" id="searchInput" placeholder="Пошук рецептів" style="padding: 10px; width: 250px; font-size: 16px;" />
+    <button onclick="searchRecipe()" style="padding: 10px; font-size: 16px;">Знайти</button>
+  </div>
+
+  <div style="text-align: center; margin: 20px 0;">
+    <button id="favoritesButton" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Перейти до обраних</button>
+  </div>
+
+  <div id="recipe-container"></div>
+  <div id="page-numbers" style="text-align: center; margin-top: 20px;"></div>
+
+  <script src="recipes.js"></script><br><br><br><br>
+
+  <div id="welcomeModalOverlay">
+    <div id="welcomeModal">
+      <h2 id="welcomeMessage">Привіт!</h2>
+      <div>
+        <button id="btnContinue">Далі</button>
+        <button id="btnLogout">Вийти</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      const userName = localStorage.getItem('userName');
+      if (userName) {
+        const modalOverlay = document.getElementById('welcomeModalOverlay');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        welcomeMessage.textContent = "Привіт, " + userName + "!";
+        modalOverlay.classList.add('show');
+
+        localStorage.removeItem('userName');
+
+        document.getElementById('btnContinue').onclick = () => {
+          modalOverlay.classList.remove('show');
+        };
+
+        document.getElementById('btnLogout').onclick = () => {
+          firebase.auth().signOut()
+            .then(() => {
+              modalOverlay.classList.remove('show');
+              alert("Ви вийшли з акаунту");
+            })
+            .catch((error) => {
+              alert("Помилка при виході: " + error.message);
+            });
+        };
+      }
+    });
+  </script>
+<script>
+  document.querySelector('a[href="#recipes-section"]').addEventListener('click', function(event) {
+    event.preventDefault();
+    document.getElementById('recipes-section').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+<footer style="background-color: #812121; color: white; padding: 30px 20px; text-align: center; font-family: 'Poppins', sans-serif;">
+  <h3 style="margin-bottom: 10px;">Зв’яжіться з нами у соцмережах</h3>
+  <p style="margin: 5px 0;">Instagram: <a href="https://instagram.com/magiyadesertiv" target="_blank" style="color: #ffcccb;">@magiyadesertiv</a></p>
+  <p style="margin: 5px 0;">Facebook: <a href="https://fb.com/magiyadesertiv" target="_blank" style="color: #ffcccb;">fb.com/magiyadesertiv</a></p>
+  <p style="margin: 5px 0;">Email: <a href="mailto:info@deserty.ua" style="color: #ffcccb;">info@deserty.ua</a></p>
+  <hr style="margin: 20px auto; width: 60%; border-color: #e0bfbf;">
+  <p style="margin: 10px 0;">Наша адреса: вул. Солодка, 15, м. Львів, Україна</p>
+</footer>
+</body>
+</html>

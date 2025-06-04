@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Реєстрація - Магія десертів</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; }
+    input { display: block; margin: 10px 0; padding: 8px; width: 100%; }
+    button { padding: 10px 15px; background-color: #812121; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #a33333; }
+    #regMessage { margin-top: 15px; font-weight: bold; }
+    #regMessage.success { color: green; }
+    #regMessage.error { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Реєстрація</h2>
+  <input type="text" id="regName" placeholder="Ваше ім’я" />
+  <input type="email" id="regEmail" placeholder="Email" />
+  <input type="password" id="regPassword" placeholder="Пароль" />
+  <button onclick="register()">Зареєструватися</button>
+  <p id="regMessage"></p>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIkjMnJ3SaP65oSA8hbfnK_y82Ufs394o",
+      authDomain: "desserts-site.firebaseapp.com",
+      databaseURL: "https://desserts-site-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "desserts-site",
+      storageBucket: "desserts-site.appspot.com",
+      messagingSenderId: "265582634261",
+      appId: "1:265582634261:web:3b3f56679bf8155181b51c"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    function register() {
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const password = document.getElementById("regPassword").value;
+      const messageEl = document.getElementById("regMessage");
+
+      messageEl.textContent = "";
+      messageEl.className = "";
+
+      if (!name) {
+        messageEl.textContent = "Введіть, будь ласка, ім’я";
+        messageEl.className = "error";
+        return;
+      }
+      if (!email) {
+        messageEl.textContent = "Введіть, будь ласка, email";
+        messageEl.className = "error";
+        return;
+      }
+      if (password.length < 6) {
+        messageEl.textContent = "Пароль має містити щонайменше 6 символів";
+        messageEl.className = "error";
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const user = userCredential.user;
+
+          console.log("User created:", user.uid);
+
+          return database.ref('users/' + user.uid).set({
+            name: name,
+            email: email,
+            createdAt: new Date().toISOString()
+          });
+        })
+        .then(() => {
+
+          messageEl.textContent = "Реєстрація пройшла успішно! Тепер увійдіть на свій акаунт.";
+          messageEl.className = "success";
+          setTimeout(() => {
+            window.location.href = "login.html"; 
+            }, 2000);
+          })
+
+        .catch(error => {
+          const messageEl = document.getElementById("regMessage");
+          const errorMessages = {
+            "auth/invalid-email": "Невірний формат email-адреси.",
+            "auth/email-already-in-use": "Ця email-адреса вже використовується.",
+            "auth/weak-password": "Пароль надто слабкий. Він має містити щонайменше 6 символів.",
+            "auth/operation-not-allowed": "Ця операція наразі недоступна. Спробуйте пізніше.",
+          };
+          const message = errorMessages[error.code] || "Сталася помилка: " + error.message;
+          messageEl.textContent = message;
+          messageEl.className = "error";
+          console.error(error);
+        });
+    }
+  </script>
+</body>
+</html>

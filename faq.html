@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Поширені запитання | Магія десертів</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #521414;
+      font-family: 'Poppins', sans-serif;
+      color: #fff0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    button.back-button {
+      display: block;
+      margin: 40px 0 30px 450px; /* верхній, правий, нижній, лівий */
+      background-color: #812121;
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+
+    button.back-button:hover {
+      background-color: #888;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #ffe5e5;
+    }
+
+    .faq-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #812121;
+      padding: 40px;
+      border-radius: 0px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+      border: 1px solid #fff0f0;
+    }
+
+    .faq-item {
+      margin-bottom: 20px;
+    }
+
+    .faq-question {
+      font-weight: 700;
+      cursor: pointer;
+      padding: 10px;
+      background-color: #521414;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background-color: #963737;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      padding-left: 15px;
+      margin-top: 5px;
+      font-weight: 400;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 300px; /* достатньо для тексту відповіді */
+      margin-top: 10px;
+    }
+    
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="location.href='index.html'">← Назад на головну</button>
+
+  <h1>Поширені запитання</h1>
+
+  <div class="faq-container">
+    <div class="faq-item">
+      <div class="faq-question">Як уникнути пригорання шоколаду?</div>
+      <div class="faq-answer">Розтоплюйте шоколад на водяній бані або в мікрохвильовій печі короткими інтервалами, помішуючи.</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question">Як обрати якісні інгредієнти для десертів?</div>
+      <div class="faq-answer">
+        Якісні інгредієнти — запорука смачного десерту. Рекомендуємо обирати натуральне масло, свіже молоко, та яйця від перевірених постачальників. Для фруктів та ягід краще використовувати сезонні і локальні продукти. Цукор і борошно повинні бути без додаткових домішок. Якщо хочете приготувати здоровіший варіант, замініть білий цукор на мед або кленовий сироп.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Як правильно зберігати готові десерти?</div>
+      <div class="faq-answer">
+        Залежно від типу десерту, зберігання може відрізнятися. Кремові десерти та ті, що містять молочні продукти, краще зберігати у холодильнику не більше 2-3 днів. Печиво і сухі тістечка можна тримати у герметичних контейнерах при кімнатній температурі до тижня. Якщо потрібно довше зберігати, можна заморозити десерт, обгорнувши у харчову плівку, але після розморожування текстура може змінитися.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Як адаптувати рецепти під безглютенову дієту?</div>
+      <div class="faq-answer">
+        Для безглютенових десертів використовуйте безглютенове борошно (наприклад, мигдальне, рисове, кокосове) замість пшеничного. Звертайте увагу на усі інгредієнти — навіть дрібні добавки можуть містити глютен. Також додайте трохи клейковини або замінників, щоб десерт мав потрібну структуру. Важливо тестувати рецепти, оскільки текстура і смак можуть відрізнятися від традиційних варіантів.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Чи можна замінити яйця у рецептах?</div>
+      <div class="faq-answer">
+        Так, яйця можна замінити різними альтернативами залежно від рецепту. Наприклад, для випічки підійде пюре з банана, яблучне пюре, насіння льону, змішане з водою, або комерційні замінники яєць. Вони додають вологість і зв’язують інгредієнти. Зверніть увагу, що заміна може змінити текстуру і смак, тому рекомендується експериментувати з невеликими порціями.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Чи можна використовувати готові суміші для десертів?</div>
+      <div class="faq-answer">
+        Готові суміші значно спрощують процес приготування і підходять, якщо ви поспішаєте. Однак вони можуть містити консерванти, підсилювачі смаку та інші добавки. Якщо ви хочете повністю контролювати склад десерту і робити його максимально натуральним, краще готувати з окремих інгредієнтів. У нашому сайті ви знайдете багато простих і натуральних рецептів, які легко повторити.
+      </div>
+    </div>
+<div class="faq-item">
+  <div class="faq-question">Чи можна заморожувати готові десерти?</div>
+  <div class="faq-answer">
+    Так, багато десертів можна заморожувати, наприклад, торти без крему, печиво або морозиво. Важливо правильно упакувати десерт у герметичний контейнер, щоб уникнути потрапляння запахів і морозильних опіків.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">Як зробити десерт менш солодким?</div>
+  <div class="faq-answer">
+    Для зменшення солодкості можна зменшити кількість цукру в рецепті або замінити його на натуральні підсолоджувачі, як-от мед, стевія або агавовий сироп. Спробуйте поступово регулювати кількість, щоб зберегти баланс смаку.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">Як уникнути пригорання десертів під час випікання?</div>
+  <div class="faq-answer">
+    Щоб уникнути пригорання, використовуйте правильну температуру і час випікання, рекомендовані в рецепті. Також можна спробувати використовувати пергаментний папір або зменшити температуру духовки на 10-15 градусів і трохи подовжити час.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">Чи можна замінити вершкове масло на рослинну олію?</div>
+  <div class="faq-answer">
+    Вершкове масло можна замінити на рослинну олію, але це може вплинути на смак і текстуру десерту. Зазвичай олію беруть у меншій кількості, ніж масло. Найкраще використовувати нейтральну олію, наприклад, соняшникову або рапсову.
+  </div>
+</div>
+  </div>
+
+  <script>
+    // Скрипт для відкривання/закривання відповідей
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', () => {
+        const item = question.parentElement;
+        item.classList.toggle('active');
+      });
+    });
+  </script>
+<br><br><br><br><footer style="background-color: #812121; color: white; padding: 30px 20px; text-align: center; font-family: 'Poppins', sans-serif;">
+  <h3 style="margin-bottom: 10px;">Зв’яжіться з нами у соцмережах</h3>
+  <p style="margin: 5px 0;">Instagram: <a href="https://instagram.com/magiyadesertiv" target="_blank" style="color: #ffcccb;">@magiyadesertiv</a></p>
+  <p style="margin: 5px 0;">Facebook: <a href="https://fb.com/magiyadesertiv" target="_blank" style="color: #ffcccb;">fb.com/magiyadesertiv</a></p>
+  <p style="margin: 5px 0;">Email: <a href="mailto:info@deserty.ua" style="color: #ffcccb;">info@deserty.ua</a></p>
+  <hr style="margin: 20px auto; width: 60%; border-color: #e0bfbf;">
+  <p style="margin: 10px 0;">Наша адреса: вул. Солодка, 15, м. Львів, Україна</p>
+</footer>
+</body>
+</html>

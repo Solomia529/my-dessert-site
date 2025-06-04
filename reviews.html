@@ -1,0 +1,24 @@
+<div id="reviewForm" style="display: none;">
+  <textarea id="reviewText" placeholder="Ваш відгук..."></textarea>
+  <button onclick="submitReview()">Надіслати</button>
+</div>
+
+<p id="notLoggedInMessage"></p>
+
+<script>
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById("reviewForm").style.display = "block";
+    } else {
+      document.getElementById("notLoggedInMessage").textContent =
+        "Лише зареєстровані користувачі можуть залишати відгуки. Увійдіть або зареєструйтесь.";
+    }
+  });
+
+  function submitReview() {
+    const review = document.getElementById("reviewText").value;
+    const userEmail = firebase.auth().currentUser.email;
+    localStorage.setItem("review_" + userEmail, review);
+    alert("Відгук збережено!");
+  }
+</script>

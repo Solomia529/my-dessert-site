@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Вхід - Магія десертів</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; }
+    input { display: block; margin: 10px 0; padding: 8px; width: 100%; }
+    button { padding: 10px 15px; background-color: #812121; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #a33333; }
+    #loginMessage { margin-top: 15px; font-weight: bold; }
+    #loginMessage.success { color: green; }
+    #loginMessage.error { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Вхід</h2>
+  <input type="email" id="loginEmail" placeholder="Email" />
+  <input type="password" id="loginPassword" placeholder="Пароль" />
+  <button onclick="login()">Увійти</button>
+  <p id="loginMessage"></p>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIkjMnJ3SaP65oSA8hbfnK_y82Ufs394o",
+      authDomain: "desserts-site.firebaseapp.com",
+      databaseURL: "https://desserts-site-default-rtdb.europe-west1.firebasedatabase.app", 
+      projectId: "desserts-site",
+      storageBucket: "desserts-site.appspot.com", 
+      messagingSenderId: "265582634261",
+      appId: "1:265582634261:web:3b3f56679bf8155181b51c"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    function login() {
+      console.log("Функція login викликана");
+
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const messageEl = document.getElementById("loginMessage");
+
+      if (!email || !password) {
+        messageEl.textContent = "Будь ласка, введіть email і пароль.";
+        messageEl.className = "error";
+        console.log("Email або пароль не введено");
+        return;
+      }
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          console.log("Користувач успішно увійшов");
+
+          const uid = userCredential.user.uid;
+          console.log("UID користувача:", uid);
+
+          return database.ref("users/" + uid + "/name").once("value");
+        })
+        .then((snapshot) => {
+          const userName = snapshot.val();
+          console.log("Ім’я користувача з бази:", userName);
+
+          localStorage.setItem("userName", userName);
+          messageEl.textContent = "Вхід успішний! Перенаправляємо...";
+          messageEl.className = "success";
+
+          setTimeout(() => {
+            console.log("Перенаправлення на index.html...");
+            window.location.href = "index.html";
+          }, 1500);
+        })
+        .catch((error) => {
+          console.error("Помилка входу:", error);
+
+          const errors = {
+            "auth/user-not-found": "Користувача не знайдено.",
+            "auth/wrong-password": "Невірний пароль.",
+            "auth/invalid-email": "Невірний формат email.",
+          };
+          messageEl.textContent = errors[error.code] || "Помилка: " + error.message;
+          messageEl.className = "error";
+        });
+    }
+  </script>
+</body>
+</html>

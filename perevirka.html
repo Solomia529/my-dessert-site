@@ -1,0 +1,18 @@
+<p id="userInfo"></p>
+<button onclick="logout()">Вийти</button>
+
+<script>
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById("userInfo").textContent = "Привіт, " + user.email;
+    } else {
+      document.getElementById("userInfo").innerHTML = 'Ви не увійшли. <a href="login.html">Увійти</a>';
+    }
+  });
+
+  function logout() {
+    firebase.auth().signOut().then(() => {
+      window.location.href = "login.html";
+    });
+  }
+</script>

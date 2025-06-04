@@ -1,0 +1,329 @@
+ <!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Штрудель з яблуками</title>
+  <style>
+    body {
+      background-color: #4b0e0e;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      background-color: #812121;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    img {
+      display: block;
+      margin: 0 auto 25px;
+      max-width: 100%;
+      border-radius: 15px;
+    }
+
+    h2 {
+      text-align: center;
+      text-transform: uppercase;
+      margin-top: 30px;
+      color: #ffcccb;
+    }
+
+    h3 {
+      margin-top: 30px;
+      color: #ffcccb;
+    }
+
+    ul, ol {
+      padding-left: 20px;
+      line-height: 1.6;
+    }
+
+    button.back-button {
+      display: block;
+      margin: 20px 0 40px 530px;
+      background-color: #812121;
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+
+    button.back-button:hover {
+      background-color: #888;
+    }
+
+    .recipe-detail-text {
+      font-size: 1.1em;
+      line-height: 1.6;
+    }
+
+    .like-section {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 30px;
+      font-size: 1.2em;
+      gap: 10px;
+      color: #fff;
+    }
+
+    .heart {
+      cursor: pointer;
+      font-size: 1.5em;
+      transition: color 0.3s;
+      user-select: none;
+    }
+
+    .heart.liked {
+      color: red;
+      content: "♥";
+    }
+    /* Коментарі */
+    .comments-section {
+      margin-top: 40px;
+    }
+    .comments-section h2 {
+      text-align: left;
+      color: #ffcccb;
+    }
+    .comment {
+      background-color: #5a1a1a;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+    .comment-author {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .comment-form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .comment-form textarea {
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: none;
+      resize: vertical;
+      min-height: 60px;
+    }
+    .comment-form button {
+      align-self: flex-end;
+      background-color: #ffcccb;
+      color: #4b0e0e;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .comment-form button:hover {
+      background-color: #ffc0c0;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCIkjMnJ3SaP65oSA8hbfnK_y82Ufs394o",
+  authDomain: "desserts-site.firebaseapp.com",
+  databaseURL: "https://desserts-site-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "desserts-site",
+  storageBucket: "desserts-site.appspot.com",
+  messagingSenderId: "265582634261",
+  appId: "1:265582634261:web:3b3f56679bf8155181b51c"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+const rtdb = firebase.database();
+
+    const currentRecipe = {
+      title: 'Штрудель з яблуками',
+      image: 'images/shtrudel.png',
+      link: 'shtrudel.html'
+    };
+
+    function toggleLike() {
+      const heart = document.querySelector('.heart');
+      const user = auth.currentUser;
+
+      if (!user) {
+        alert("Будь ласка, увійдіть, щоб додавати в обране.");
+        return;
+      }
+
+      const favDoc = db.collection('favorites').doc(user.uid);
+      favDoc.get().then(doc => {
+        let favorites = doc.exists ? doc.data().recipes || [] : [];
+        const exists = favorites.some(recipe => recipe.title === currentRecipe.title);
+
+        if (exists) {
+          favorites = favorites.filter(recipe => recipe.title !== currentRecipe.title);
+          heart.classList.remove('liked');
+          heart.textContent = '♡';
+        } else {
+          favorites.push(currentRecipe);
+          heart.classList.add('liked');
+          heart.textContent = '♥';
+        }
+
+        favDoc.set({ recipes: favorites }).catch(err => console.error("Помилка збереження:", err));
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const heart = document.querySelector('.heart');
+      const commentsContainer = document.getElementById('comments-container');
+
+      auth.onAuthStateChanged(user => {
+        if (!user) {
+          heart.textContent = '♡';
+          commentsContainer.innerHTML = '<p>Увійдіть, щоб бачити коментарі та додавати свої.</p>';
+          return;
+        }
+
+        db.collection('favorites').doc(user.uid).get().then(doc => {
+          const favorites = doc.exists ? doc.data().recipes || [] : [];
+          const exists = favorites.some(recipe => recipe.title === currentRecipe.title);
+          heart.textContent = exists ? '♥' : '♡';
+          heart.classList.toggle('liked', exists);
+        });
+
+        db.collection("comments")
+          .where("recipe", "==", currentRecipe.title)
+          .orderBy("timestamp", "desc")
+          .onSnapshot(snapshot => {
+            commentsContainer.innerHTML = "";
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              const commentEl = document.createElement("div");
+              commentEl.className = "comment";
+              commentEl.innerHTML = `
+                <div class="comment-author">${data.username || "Соломія"}</div>
+                <div>${data.text}</div>
+              `;
+              commentsContainer.appendChild(commentEl);
+            });
+          });
+      });
+
+      document.getElementById('comment-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return alert("Увійдіть, щоб залишати коментарі.");
+
+        console.log('Current user uid:', user.uid);
+        
+        const commentText = document.getElementById('comment-text').value.trim();
+        if (!commentText) return;
+
+        rtdb.ref('users/' + user.uid).once('value')
+  .then(snapshot => {
+    const userData = snapshot.val();
+    console.log("userData from RTDB:", userData);
+    const username = (userData && userData.name) ? userData.name : "Користувач";
+
+    return db.collection("comments").add({
+      recipe: currentRecipe.title,
+      text: commentText,
+      name: username, 
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  })
+  .then(() => {
+    document.getElementById('comment-text').value = '';
+  })
+  .catch(err => {
+    console.error("Помилка додавання коментаря:", err);
+  });
+
+
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <button class="back-button" onclick="history.back()">← Назад</button>
+  <div class="container">
+    <h1>Штрудель з яблуками</h1>
+    <img src="images/shtrudel.png" alt="Штрудель з яблуками">
+
+    <div class="recipe-detail-text">
+      <h2>Інгредієнти</h2>
+      <h3>Для тіста:</h3>
+      Борошно – 250 г<br>
+      Вода тепла – 100 мл<br>
+      Яйце – 1 шт.<br>
+      Рослинна олія – 2 ст.л.<br>
+      Дрібка солі<br>
+
+      <h3>Для начинки:</h3>
+      Яблука (кисло-солодкі) – 5 шт.<br>
+      Цукор – 100 г<br>
+      Кориця – 2 ч.л.<br>
+      Родзинки – 50 г<br>
+      Подрібнені горіхи – 50 г<br>
+      Сухарі панірувальні – 3 ст.л.<br>
+      Вершкове масло – 50 г<br>
+
+      <h3>Для подачі:</h3>
+      Цукрова пудра<br>
+      Ванільне морозиво або збиті вершки<br><br>
+
+      <h2>Приготування</h2>
+      <ol>
+        <li><b>Тісто:</b> Замісити з усіх інгредієнтів, залишити на 30 хвилин.</li> <br>
+        <li><b>Начинка:</b> Нарізати яблука, додати цукор, корицю, родзинки, горіхи.</li><br>
+        <li><b>Розкачування:</b> Тісто максимально тонко розкачати, змастити маслом.</li><br>
+        <li><b>Формування:</b> Посипати сухарями, викласти начинку, скрутити рулет.</li><br>
+        <li><b>Випікання:</b> 180°C, 35–40 хвилин.</li><br>
+        <li><b>Подача:</b> З пудрою, морозивом або вершками.</li>
+      </ol>
+
+      <em>Смачного! 😋</em>
+    </div>
+
+    <div class="like-section">
+      <span>Додати в обрані</span>
+      <span class="heart" onclick="toggleLike()">♡</span>
+    </div>
+    <div class="comments-section">
+      <h2>Коментарі</h2>
+      <div id="comments-container">
+        <p>Завантаження коментарів...</p>
+      </div>
+
+      <form id="comment-form" class="comment-form">
+        <textarea id="comment-text" placeholder="Напишіть свій коментар..." required></textarea>
+        <button type="submit">Додати коментар</button>
+      </form>
+    </div>
+</div>
+</body>
+</html>
